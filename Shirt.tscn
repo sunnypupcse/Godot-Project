@@ -1,0 +1,51 @@
+[gd_scene load_steps=5 format=3 uid="uid://bwuiibxqyd8i7"]
+
+[ext_resource type="Texture2D" uid="uid://u15h8wy5ue66" path="res://project/PNGs/Shirt_.png" id="1_uo8xg"]
+
+[sub_resource type="GDScript" id="GDScript_sh1rb"]
+script/source = "extends CharacterBody2D
+
+
+var player
+var chase = false
+var speed = 500
+
+func _physics_process(delta: float) -> void:
+	if chase == true:
+		player = $\"../player\"
+		var direction = (player.position - self.position).normalized()
+		self.position.x = player.position.x + 145
+		self.position.y = player.position.y + 155
+	move_and_slide()
+	
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.name == \"player\":
+		print(\"kk\")
+		chase = true
+	else:
+		print(\"hh\")
+		chase = false
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jexky"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_36lag"]
+radius = 292.657
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+script = SubResource("GDScript_sh1rb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_jexky")
+disabled = true
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_36lag")
+
+[node name="Shirt" type="Sprite2D" parent="."]
+position = Vector2(-1, -1)
+texture = ExtResource("1_uo8xg")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

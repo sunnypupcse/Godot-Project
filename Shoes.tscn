@@ -1,0 +1,56 @@
+[gd_scene load_steps=5 format=3 uid="uid://cgvgxrcue4t3p"]
+
+[ext_resource type="Texture2D" uid="uid://dn5ub6cg7f7mx" path="res://project/PNGs/Shoes_.png" id="1_81451"]
+
+[sub_resource type="GDScript" id="GDScript_02mvs"]
+script/source = "extends CharacterBody2D
+
+
+var player
+var chase = false
+var speed = 500
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+func _physics_process(delta: float) -> void:
+	if chase == true:
+		player = $\"../player\"
+		var direction = (player.position - self.position).normalized()
+		self.position.x = player.position.x + 145
+		self.position.y = player.position.y + 230
+	move_and_slide()
+	
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.name == \"player\":
+		print(\"kk\")
+		chase = true
+	else:
+		print(\"hh\")
+		chase = false
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_o5vkn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cuyjl"]
+size = Vector2(602, 266)
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+script = SubResource("GDScript_02mvs")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_o5vkn")
+disabled = true
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(39, 17)
+shape = SubResource("RectangleShape2D_cuyjl")
+
+[node name="Shoes" type="Sprite2D" parent="."]
+position = Vector2(-2, -1)
+texture = ExtResource("1_81451")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
